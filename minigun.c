@@ -28,6 +28,7 @@ int do_trace(pid_t child) {
         ptrace(PTRACE_SETOPTIONS, child, 0 , PTRACE_O_TRACESYSGOOD);
 
                 while(1) {
+                        
                         if (wait_for_syscall(child) != 0);
                         syscall = ptrace(PTRACE_PEEKUSER, child, sizeof(long)* ORIG_RAX);
                         fprintf(stderr, "syscall(%d) = ", syscall);
