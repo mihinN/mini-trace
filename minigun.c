@@ -30,10 +30,10 @@ int do_trace(pid_t child) {
                 while(1) {
                         
                         if (wait_for_syscall(child) != 0);
-                        syscall = ptrace(PTRACE_PEEKUSER, child, sizeof(long)* ORIG_RAX);
+                        syscall = ptrace(PTRACE_PEEKUSER, child, sizeof(long)* ORIG_EAX);
                         fprintf(stderr, "syscall(%d) = ", syscall);
                         if (wait_for_syscall(child) != 0) break;
-                        retval = ptrace((PTRACE_PEEKUSER), child, sizeof(long)*RAX);
+                        retval = ptrace((PTRACE_PEEKUSER), child, sizeof(long)*EAX);
                         fprintf(stderr, "%d\n", retval);
                 }
 
@@ -41,7 +41,21 @@ int do_trace(pid_t child) {
         
 }
 
-int wait_for_sys_calls();
+int wait_for_sys_calls(pid_t child) {
+
+        int status;
+
+        while(1) {
+                ptrace(PTRACE_SYSCALL, child , 0, 0);
+                waitpid(child , &status, 0);
+                        if (WIFSTOPPED(status) && WSTOPSIG(status) & 0x80) {
+                                return 0;
+                        }
+                        if (WIFEXITED(status)) {
+                                return 1;
+                        }
+        }
+}
 
 int main(int argc , char** argv) {
 
