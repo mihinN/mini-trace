@@ -41,6 +41,8 @@ int do_trace(pid_t child) {
         
 }
 
+int wait_for_sys_calls();
+
 int main(int argc , char** argv) {
 
         if (argc < 2) {
