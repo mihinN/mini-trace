@@ -20,28 +20,7 @@ int do_child(int argc, char** argv) {
         return execvp(args[0], args);
 }
 
-int wait_for_syscall(pid_t child);
-
-int do_trace(pid_t child) {
-        int status, syscall, retval;
-        waitpid(child , &status, 0);
-        ptrace(PTRACE_SETOPTIONS, child, 0 , PTRACE_O_TRACESYSGOOD);
-
-                while(1) {
-                        
-                        if (wait_for_syscall(child) != 0);
-                        syscall = ptrace(PTRACE_PEEKUSER, child, sizeof(long)* ORIG_EAX);
-                        fprintf(stderr, "syscall(%d) = ", syscall);
-                        if (wait_for_syscall(child) != 0) break;
-                        retval = ptrace((PTRACE_PEEKUSER), child, sizeof(long)*EAX);
-                        fprintf(stderr, "%d\n", retval);
-                }
-
-                return 0;
-        
-}
-
-int wait_for_sys_calls(pid_t child) {
+int wait_for_syscall(pid_t child) {
 
         int status;
 
@@ -56,6 +35,27 @@ int wait_for_sys_calls(pid_t child) {
                         }
         }
 }
+
+
+int do_trace(pid_t child) {
+        int status, syscall, retval;
+        waitpid(child , &status, 0);
+        ptrace(PTRACE_SETOPTIONS, child, 0 , PTRACE_O_TRACESYSGOOD);
+                while(1) {
+
+                        if (wait_for_syscall(child) != 0) break;
+
+                        syscall = ptrace(PTRACE_PEEKUSER, child, sizeof(long)* ORIG_RAX);
+                        fprintf(stderr, "syscall(%d) = ", syscall);
+                        if (wait_for_syscall(child) != 0) break;
+                        retval = ptrace((PTRACE_PEEKUSER), child, sizeof(long)*RAX);
+                        fprintf(stderr, "%d\n", retval);
+                }
+
+                return 0;
+        
+}
+
 
 int main(int argc , char** argv) {
 
