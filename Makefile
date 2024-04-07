@@ -7,7 +7,7 @@ clean:
 	rm -rf *.out
 
 compile:
-	$(CC) -c minigun.c -o mini-trace.o -m32
+	$(CC) -c minigun.c -o mini-trace.o
 
 link:
 	$(CC) -o mini-trace mini-trace.o 
