@@ -1,5 +1,4 @@
 ** Simple syscall decoder ** 
 
-If something like 'libraryError' is shown, indicating a missing library such as `#include <bits/libc-header-start.h>`, 
-it is because the code is being compiled into 32-bit binaries (using the `-m32` flag). 
-Therefore, you need to install the `gcc-multilib` library.
+If you encounter something like 'libraryError' or #include <bits/libc-header-start.h>, 
+simply compile with the -m32 flag (this will compile into a 32-bit version) and install the gcc-multilib library.
